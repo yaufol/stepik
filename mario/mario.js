@@ -14,11 +14,12 @@ drawPyramid(15);
  *      ######
  */
 function drawPyramid(height) {
-let pyramid = document.getElementById('pyramid');
-//pyramid.removeChild(pyramid.childNodes[0]);
-pyramid.appendChild(document.createTextNode('a child'));
-pyramid.append(document.createTextNode('not a child'));
-for(var i=0;i<height;i++){
 
-	console.log(" ".repeat(height-1-i) + "#".repeat(i+2));}
+	let pyramid = document.getElementById('pyramid');
+	pyramid.removeChild(pyramid.childNodes[0]);
+	for (var i = 0; i < height; i++) {
+		let p = document.createElement('p');
+		p.innerHTML = "&nbsp;".repeat(height - 1 - i) + "#".repeat(i + 2);
+		pyramid.appendChild(p);
+	}
 }
