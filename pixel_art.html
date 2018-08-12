@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pixel Art</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .grid-border {
+            border: 1px solid #ddd;
+        }
+        
+        #canvas {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            border-top: none !important;
+            border-left: none !important;
+        }
+        
+        .cell {
+            background: white;
+            border-right: none !important;
+            border-bottom: none !important;
+            width: 10px;
+            height: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvas" class="grid-border">
+
+    </div>
+    <script>
+        function paintCell(target) {
+            console.log(target);
+            //if (random) return false;
+            target.style.backgroundColor = currentColor;
+            //alert(currentColor);
+        }
+
+
+        let root = document.querySelector('#canvas');
+
+        //widths and heights, cols and rows
+        let width = window.screen.width;
+        let cols = (width / 10).toFixed(0);
+        let rows = (cols / 2).toFixed(0);
+        root.style.width = cols * 10 + 'px';
+
+        //colors
+        let currentColor = '#000000';
+
+        for (r = 0; r < rows; r++) {
+            for (c = 0; c < cols; c++) {
+                cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.classList.add('grid-border');
+                cell.addEventListener('click', function(e) {
+                    paintCell(e.target);
+                });
+                root.appendChild(cell);
+            }
+        }
+    </script>
+</body>
+
+</html>
