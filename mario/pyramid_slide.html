@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pyramid slide</title>
+    <style>
+        #toolbar {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+        p{
+            font-family: 'Courier New', Courier, monospace
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toolbar">
+        <select id="glyph">
+            <option>#</option>
+            <option>@</option>
+            <option>X</option>
+            <option>$</option>
+            <option>😜</option>
+        </select>
+        <input id="height" type="range" min="1" max="12">
+    </div>
+    <div id="pyramid"></div>
+    <script>
+        let pyramid = document.querySelector('#pyramid');
+        let glyph = document.querySelector('#glyph');
+        let height = document.querySelector('#height');
+
+        function render() {
+            pyramid.textContent = '';
+            /*  console.log(glyph.options[glyph.selectedIndex].value);
+              console.log(height.value);*/
+            g = glyph.options[glyph.selectedIndex].value;
+            h = height.value;
+
+            for (var i = 0; i < h; i++) {
+                let p = document.createElement('p');
+                p.innerHTML = "&nbsp;".repeat(h - 1 - i) + g.repeat(i + 2);
+                pyramid.appendChild(p);
+            }
+        }
+
+        glyph.addEventListener('change', function () {
+            render();
+        });
+        height.addEventListener('change', function () {
+            render();
+        });
+    </script>
+</body>
+
+</html>
