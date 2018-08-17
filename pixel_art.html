@@ -32,44 +32,142 @@
             height: 10px;
             box-sizing: border-box;
         }
+        
+        #toolbar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 5px;
+        }
+        
+        .option {
+            border: 1px solid black;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+        
+        .options-color,
+        .options-random-color {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .options-random-color {
+            text-align: center;
+            border: 1px solid black;
+            box-sizing: border-box;
+        }
+        
+        #palette {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 
 <body>
-    <div id="canvas" class="grid-border">
+    <div id="app" class="grid-border">
 
     </div>
+
     <script>
-        function paintCell(target) {
-            console.log(target);
-            //if (random) return false;
-            target.style.backgroundColor = currentColor;
-            //alert(currentColor);
-        }
+        const Editor = {
+            renderCanvas: function() {
+
+            },
+            setColor: function(color) {
+                Editor.options.palette.currentColor = color;
+
+            },
 
 
-        let root = document.querySelector('#canvas');
+            paintCell: function(target) {
+                if (this.randomColor) alert('random color');
+                else target.style.backgroundColor = Editor.options.palette.currentColor;
+            },
+            setRandom: function(value) {
+                if (value !== true || value !== false) return false;
+                this.randomColor = value;
+            },
+            options: {
+                palette: {
+                    title: 'Палитра цветов',
+                    colors: ['red', 'green', 'blue', 'orange', 'purple', 'limegreen'],
+                    currentColor: 'black',
+                    randomColor: false,
+                    render: function() {
+                        let palette = document.createElement('div');
+                        palette.classList.add('option');
+                        palette.setAttribute('id', 'palette');
+                        for (i = 0; i < this.colors.length; i++) {
+                            let div = document.createElement('div');
+                            div.classList.add('options-color');
+                            div.style.backgroundColor = this.colors[i];
+                            div.addEventListener('click', function() {
+                                Editor.setColor(div.style.backgroundColor);
+                            });
 
-        //widths and heights, cols and rows
-        let width = window.screen.width;
-        let cols = (width / 10).toFixed(0);
-        let rows = (cols / 2).toFixed(0);
-        root.style.width = cols * 10 + 'px';
+                            palette.appendChild(div);
+                        }
+                        //random button
+                        let div = document.createElement('div');
+                        div.classList.add('options-random-color');
+                        div.textContent = '?';
+                        palette.appendChild(div);
+                        return palette;
+                    }
+                },
+                canvas: {
+                    title: 'Размер поля',
+                    width: window.screen.width,
+                    cols: function() {
+                        return (this.width / 10).toFixed(0)
+                    },
+                    rows: function() {
+                        return (this.cols() / 2).toFixed(0)
+                    },
 
-        //colors
-        let currentColor = '#000000';
+                    render: function() {
+                        //confirm: rerendering will cause resetting current progress. do you really want to continue?
+                    }
 
-        for (r = 0; r < rows; r++) {
-            for (c = 0; c < cols; c++) {
-                cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.classList.add('grid-border');
-                cell.addEventListener('click', function(e) {
-                    paintCell(e.target);
-                });
-                root.appendChild(cell);
+                },
+                tools: {
+                    brush: true,
+                    fill: false
+                }
+            },
+
+            render: function() {
+                var app = document.querySelector('#app');
+
+                var canvas = document.createElement('div');
+                canvas.setAttribute('id', 'canvas');
+                canvas.style.width = Editor.options.canvas.cols() * 10 + 'px'; //this
+
+                var toolbar = document.createElement('div');
+                toolbar.setAttribute('id', 'toolbar');
+                toolbar.appendChild(this.options.palette.render());
+
+                for (r = 0; r < Editor.options.canvas.rows(); r++) {
+                    for (c = 0; c < Editor.options.canvas.cols(); c++) {
+                        cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        cell.classList.add('grid-border');
+                        cell.addEventListener('click', function(e) {
+                            Editor.paintCell(e.target);
+                        });
+                        canvas.appendChild(cell);
+                    }
+                }
+
+                app.appendChild(canvas);
+                app.appendChild(toolbar);
+
             }
         }
+        Editor.render();
     </script>
 </body>
 
