@@ -28,8 +28,6 @@
             background: white;
             border-right: none !important;
             border-bottom: none !important;
-            width: 10px;
-            height: 10px;
             box-sizing: border-box;
         }
         
@@ -121,8 +119,9 @@
                 canvas: {
                     title: 'Размер поля',
                     width: window.screen.width,
+                    pixelSize:10,
                     cols: function() {
-                        return (this.width / 10).toFixed(0)
+                        return (this.width / this.pixelSize).toFixed(0)
                     },
                     rows: function() {
                         return (this.cols() / 2).toFixed(0)
@@ -144,7 +143,7 @@
 
                 var canvas = document.createElement('div');
                 canvas.setAttribute('id', 'canvas');
-                canvas.style.width = Editor.options.canvas.cols() * 10 + 'px'; //this
+                canvas.style.width = Editor.options.canvas.cols() * Editor.options.canvas.pixelSize + 'px'; //this
 
                 var toolbar = document.createElement('div');
                 toolbar.setAttribute('id', 'toolbar');
@@ -154,6 +153,8 @@
                     for (c = 0; c < Editor.options.canvas.cols(); c++) {
                         cell = document.createElement('div');
                         cell.classList.add('cell');
+                        cell.style.width=Editor.options.canvas.pixelSize+'px';
+                        cell.style.height=Editor.options.canvas.pixelSize+'px';
                         cell.classList.add('grid-border');
                         cell.addEventListener('click', function(e) {
                             Editor.paintCell(e.target);
