@@ -76,13 +76,38 @@
             },
             setColor: function(color) {
                 Editor.options.palette.currentColor = color;
+                console.log('current color is set to ' + color);
+            },
 
+            paintWithBrush: function(e) {
+
+                cells = document.querySelectorAll('.cell');
+                for (var i = 0, len = cells.length; i < len; i++) {
+                    cells[i].addEventListener('mouseenter',
+
+                        Editor.paintCell
+
+                    )
+                }
+            },
+            stopBrush: function(e) {
+                cells = document.querySelectorAll('.cell');
+                for (var i = 0, len = cells.length; i < len; i++) {
+                    cells[i].removeEventListener('mouseenter',
+
+                        Editor.paintCell
+
+                    )
+                }
             },
 
 
-            paintCell: function(target) {
+            paintCell: function(e) {
+                /*console.log(Editor.options.palette.colors[Editor.options.palette.currentColor]);
+                console.log(Editor.options.palette.currentColor);
+                */
                 if (this.randomColor) alert('random color');
-                else target.style.backgroundColor = Editor.options.palette.currentColor;
+                else e.target.style.backgroundColor = Editor.options.palette.colors[Editor.options.palette.currentColor];
             },
             setRandom: function(value) {
                 if (value !== true || value !== false) return false;
@@ -91,8 +116,8 @@
             options: {
                 palette: {
                     title: 'Палитра цветов',
-                    colors: ['red', 'green', 'blue', 'orange', 'purple', 'limegreen'],
-                    currentColor: 'black',
+                    colors: ['black', 'red', 'green', 'blue', 'orange', 'purple', 'limegreen'],
+                    currentColor: 0,
                     randomColor: false,
                     render: function() {
                         let palette = document.createElement('div');
@@ -101,16 +126,22 @@
                         for (i = 0; i < this.colors.length; i++) {
                             let div = document.createElement('div');
                             div.classList.add('options-color');
+                            div.setAttribute('color', i);
                             div.style.backgroundColor = this.colors[i];
                             div.addEventListener('click', function() {
-                                Editor.setColor(div.style.backgroundColor);
+                                Editor.setColor(div.getAttribute('color'));
                             });
+
 
                             palette.appendChild(div);
                         }
                         //random button
                         let div = document.createElement('div');
                         div.classList.add('options-random-color');
+                        div.setAttribute('id', 'randomButton');
+                        div.addEventListener('click', function() {
+                            Editor.options.palette.randomColor = true;
+                        });
                         div.textContent = '?';
                         palette.appendChild(div);
                         return palette;
@@ -119,7 +150,7 @@
                 canvas: {
                     title: 'Размер поля',
                     width: window.screen.width,
-                    pixelSize:10,
+                    pixelSize: 10,
                     cols: function() {
                         return (this.width / this.pixelSize).toFixed(0)
                     },
@@ -153,11 +184,11 @@
                     for (c = 0; c < Editor.options.canvas.cols(); c++) {
                         cell = document.createElement('div');
                         cell.classList.add('cell');
-                        cell.style.width=Editor.options.canvas.pixelSize+'px';
-                        cell.style.height=Editor.options.canvas.pixelSize+'px';
+                        cell.style.width = Editor.options.canvas.pixelSize + 'px';
+                        cell.style.height = Editor.options.canvas.pixelSize + 'px';
                         cell.classList.add('grid-border');
                         cell.addEventListener('click', function(e) {
-                            Editor.paintCell(e.target);
+                            Editor.paintCell(e);
                         });
                         canvas.appendChild(cell);
                     }
@@ -169,6 +200,10 @@
             }
         }
         Editor.render();
+
+
+        window.addEventListener('mousedown', Editor.paintWithBrush);
+        window.addEventListener('mouseup', Editor.stopBrush)
     </script>
 </body>
 
