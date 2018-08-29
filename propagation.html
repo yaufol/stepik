@@ -11,15 +11,37 @@
             width: 100px;
             height: 100px;
             background: greenyellow;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+        }
+        #overflown{
+            position: relative;
+            left: 10px;
+            top: 10px;
+            width: 30px;
+            height: 100px;
+            background: green;
+            display: none;
         }
     </style>
 </head>
 
 <body>
-    <div id="propagated"></div>
+
+    <div id="propagated">
+        <div id="overflown"></div>
+    </div>
     <script>
+        function is_inside(n, t) {
+            for (; n != null; n = n.parentNode)
+                if (n == t) {
+                    return true;
+                }
+        }
+
         var bd = document.querySelector('body');
-        var dv = document.querySelector('div');
+        var dv = document.querySelector('#propagated');
+        var sp = document.querySelector('#overflown');
         bd.onclick = function () {
             alert('bd');
         }
@@ -27,6 +49,44 @@
             e.stopPropagation();
             alert('dv');
         }
+
+        dv.addEventListener("mousemove", function (e) {
+            sp.textContent = e.pageX + 'x' + e.pageY;
+        })
+
+        dv.addEventListener("mouseover",function(){
+            sp.style.display='block';
+        });
+        dv.addEventListener("mouseout",function(){
+            sp.style.display='none';
+        });
+    </script>
+
+    <p>Hover over this
+        <strong>paragraph</strong>.</p>
+    <script>
+        const para = document.querySelector("p");
+        function isInside(node, target) {
+
+            /* FOR LOOP: Statement 1 is executed (one time) before the execution of the code block.
+            Statement 2 defines the condition for executing the code block.
+            Statement 3 is executed (every time) after the code block has been executed.*/
+
+            for (; node != null; node = node.parentNode)
+                if (node == target) {
+                    return true;
+                }
+        }
+        para.addEventListener("mouseover", function (event) {
+           // if (!isInside(event.relatedTarget, para)) {
+                para.style.color = "red";
+           // }
+        });
+        para.addEventListener("mouseout", function (event) {
+           // if (!isInside(event.relatedTarget, para)) {
+                para.style.color = "";
+           // }
+        });
     </script>
 </body>
 
