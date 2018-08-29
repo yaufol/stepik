@@ -48,6 +48,7 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
+            box-sizing: border-box;
         }
         
         .options-random-color {
@@ -70,43 +71,49 @@
     </div>
 
     <script>
+        function randomInteger(min, max) {
+            var rand = min - 0.5 + Math.random() * (max - min + 1)
+            rand = Math.round(rand);
+            return rand;
+        }
+
         const Editor = {
             renderCanvas: function() {
 
             },
             setColor: function(color) {
                 Editor.options.palette.currentColor = color;
+                Editor.options.palette.randomColor = false;
                 console.log('current color is set to ' + color);
+                let colors = document.querySelectorAll('.options-color');
+                for (let i = 0, items = colors.length; i < items; i++) {
+                    colors[i].style.border = 'none';
+                }
+                if (color == 0) colors[color].style.border = '2px solid white';
+                else colors[color].style.border = '2px solid black';
             },
 
             paintWithBrush: function(e) {
-
                 cells = document.querySelectorAll('.cell');
                 for (var i = 0, len = cells.length; i < len; i++) {
-                    cells[i].addEventListener('mouseenter',
-
-                        Editor.paintCell
-
-                    )
+                    cells[i].addEventListener('mouseenter', Editor.paintCell)
                 }
             },
             stopBrush: function(e) {
                 cells = document.querySelectorAll('.cell');
                 for (var i = 0, len = cells.length; i < len; i++) {
-                    cells[i].removeEventListener('mouseenter',
-
-                        Editor.paintCell
-
-                    )
+                    cells[i].removeEventListener('mouseenter', Editor.paintCell)
                 }
             },
+            fillWithColor: function(e) {
 
+            },
 
             paintCell: function(e) {
                 /*console.log(Editor.options.palette.colors[Editor.options.palette.currentColor]);
                 console.log(Editor.options.palette.currentColor);
                 */
-                if (this.randomColor) alert('random color');
+                if (Editor.options.palette.randomColor) e.target.style.backgroundColor = Editor.options.palette.colors[randomInteger(0, Editor.options.palette.colors.length)];
                 else e.target.style.backgroundColor = Editor.options.palette.colors[Editor.options.palette.currentColor];
             },
             setRandom: function(value) {
@@ -116,7 +123,7 @@
             options: {
                 palette: {
                     title: 'Палитра цветов',
-                    colors: ['black', 'red', 'green', 'blue', 'orange', 'purple', 'limegreen'],
+                    colors: ['black', '#6b5b95', '#7f4145', '#bd3d3a', '#3f69aa', '#d5ae41', '#766f57', '#e47a2f'], // 'red', 'green', 'blue', 'orange', 'purple', 'limegreen', 'yellow', 'magenta', 'lime', 'limegreen'
                     currentColor: 0,
                     randomColor: false,
                     render: function() {
@@ -127,6 +134,7 @@
                             let div = document.createElement('div');
                             div.classList.add('options-color');
                             div.setAttribute('color', i);
+                            div.setAttribute('id', 'colorOption' + i);
                             div.style.backgroundColor = this.colors[i];
                             div.addEventListener('click', function() {
                                 Editor.setColor(div.getAttribute('color'));
@@ -193,10 +201,8 @@
                         canvas.appendChild(cell);
                     }
                 }
-
                 app.appendChild(canvas);
                 app.appendChild(toolbar);
-
             }
         }
         Editor.render();
